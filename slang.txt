@@ -2,7 +2,7 @@
 >.>`Suspicious| wary
 >.<`Frustrated| angry| upset| in pain
 >//<`Embarrassed| blushing
->3`Evil but happy|Hate
+>3`Evil but happy|blushing
 >:(`Angry
 >:)`Evil Grin
 >:D`Scheming| Maniacal

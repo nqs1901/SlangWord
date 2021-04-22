@@ -5,6 +5,9 @@
  */
 package slang_word;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author nqs
@@ -111,4 +114,45 @@ public class AVLTree<AnyType extends Comparable> {
         }
     }
     
+    private void findByDefinition(String str, Node check) {
+        if (check == null) {
+            return;
+        }
+        
+        if (check.getLeft() != null) 
+            findByDefinition(str, check.getLeft());
+        if (check.toString().contains(str) == true) 
+            System.out.print(check);
+        if (check.getRight() != null) {
+            findByDefinition(str, check.getRight());
+        }
+    }
+    private Node findBySlangWord(AnyType element, Node check) {
+        if (check == null) {
+            return check;
+        }
+        Node returned = null;
+        if (element.compareTo(check.item) == 0) {
+            returned = check;
+        } else if (element.compareTo(check.item) < 0) {
+            if (check.getLeft() != null) {
+                returned = findBySlangWord(element, check.getLeft());
+            }
+        } else if (element.compareTo(check.item) > 0) {
+            if (check.getRight() != null) {
+                returned = findBySlangWord(element, check.getRight());
+            }
+        }
+        return returned;
+    }
+    
+    public void find(String str) {
+        findByDefinition(str, root);
+    }
+    
+    public Node find(AnyType element) {
+        return findBySlangWord(element, root);
+    }
+    
+ 
 }
