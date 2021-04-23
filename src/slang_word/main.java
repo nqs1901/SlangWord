@@ -21,7 +21,8 @@ public class main {
     public static void main(String[] args) {
         // TODO code application logic here
         readFile("slang.txt");
-        findByDefinition();
+        addNewSlangWord();
+        SlangWord.printTree();
     }
     
     public static void readFile(String fileName) {
@@ -72,6 +73,42 @@ public class main {
         } else {
             System.out.println(found);
         }
+    }
+      
+    private static void addNewSlangWord() {
+        System.out.println("");
+        Scanner kb = new Scanner(System.in);
+        System.out.print("\nEnter the key you would like to add to the slang word: ");
+        String key = kb.nextLine();
+        Entry newEntry = new Entry(key);
+        if (SlangWord.find(newEntry) == null) {
+            List definition = new ArrayList<>();
+            String str;
+            System.out.print("\nPlease enter the definition of the key: ");
+
+            str = kb.nextLine();
+            definition.add(str);
+            do {
+                System.out.println("Have another definition?? if not enter to end : ");
+                str = kb.nextLine();
+                if (!str.isEmpty()) {
+                    definition.add(str);
+                }
+            } while (!str.isEmpty());
+            newEntry.setDefinition(definition);
+            SlangWord.insert(newEntry);
+            try (BufferedWriter saved = new BufferedWriter(new FileWriter("slang.txt",true))) {
+                saved.write(key + "`" + definition);
+                saved.newLine();
+                
+                System.out.println("Slang Word successfully loaded.");
+            } catch (IOException e) {
+                System.out.println("Invalid File name.");
+            }
+        } else {
+            System.out.println("\nThe word you entered already exists in the slang word.");
+        }
+
     }
     public static void menu(){
         System.out.println("----------MENU----------");
