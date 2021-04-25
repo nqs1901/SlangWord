@@ -21,7 +21,7 @@ public class main {
     public static void main(String[] args) {
         // TODO code application logic here
         readFile("slang.txt");
-        addNewSlangWord();
+        findBySlangWord();
         SlangWord.printTree();
     }
     
@@ -72,6 +72,9 @@ public class main {
             System.out.println("Word not found.");
         } else {
             System.out.println(found);
+            find.setDefinition(find.getDefinition());
+            System.out.println(find);
+//            find.writeLine("history.txt");
         }
     }
       
@@ -82,11 +85,12 @@ public class main {
         String key = kb.nextLine();
         Entry newEntry = new Entry(key);
         if (SlangWord.find(newEntry) == null) {
-            List definition = new ArrayList<>();
+            List<String> definition = new ArrayList<>();
             String str;
             System.out.print("\nPlease enter the definition of the key: ");
 
             str = kb.nextLine();
+            System.out.print("");
             definition.add(str);
             do {
                 System.out.println("Have another definition?? if not enter to end : ");
@@ -97,19 +101,28 @@ public class main {
             } while (!str.isEmpty());
             newEntry.setDefinition(definition);
             SlangWord.insert(newEntry);
-            try (BufferedWriter saved = new BufferedWriter(new FileWriter("slang.txt",true))) {
-                saved.write(key + "`" + definition);
-                saved.newLine();
-                
-                System.out.println("Slang Word successfully loaded.");
-            } catch (IOException e) {
-                System.out.println("Invalid File name.");
-            }
+            newEntry.writeLine("slang.txt");
+            
         } else {
             System.out.println("\nThe word you entered already exists in the slang word.");
         }
 
     }
+    
+    private static void deleteSlangWord() {
+        System.out.println("");
+        Scanner kb = new Scanner(System.in);
+        System.out.print("Please enter the key of the slang word you want to delete: ");
+        String word = kb.nextLine();
+        Entry element = new Entry(word);
+        if (SlangWord.find(element) == null) {
+            System.out.println("Word not found.");
+        } else {
+            SlangWord.remove(element);
+            System.out.println("Succcessfully removed " + word);
+        }
+    }
+    
     public static void menu(){
         System.out.println("----------MENU----------");
         System.out.println("1. Find by slang word");

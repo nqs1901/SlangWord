@@ -154,5 +154,66 @@ public class AVLTree<AnyType extends Comparable> {
         return findBySlangWord(element, root);
     }
     
- 
+    private Node findMinNode(Node<AnyType> find) {
+        if (find.Left == null) {
+            return find;
+        } else {
+            return findMinNode(find.Left);
+        }
+    }
+    public void remove(AnyType x) {
+
+        root = remove(x, root);
+    }
+
+    private Node remove(AnyType element, Node check) {
+        if (check == null) {
+            return check;
+        } 
+        else if (element.compareTo(check.getItem()) < 0) {
+            check.Left = remove(element, check.Left);
+
+        } 
+        else if (element.compareTo(check.getItem()) > 0) {
+            check.Right = remove(element, check.Right);
+        }
+        else {
+            if (check.Right == null || check.Left == null) {
+                Node temp = null;
+                if (check.Left == null) {
+                    temp = check.Right;
+                } else {
+                    temp = check.Left;
+                }
+                if (temp == null) {
+                    check = null;
+                } else {
+                    check = temp;
+                }
+            } else {
+                Node temp = findMinNode(check.Right);
+                check.setItem(temp.getItem());
+                check.Right = remove((AnyType) temp.item, check.Right);
+            }
+        }
+        if (check == null) {
+            return check;
+        }
+        if (getHeight(check.Left) - getHeight(check.Right) == 2) {
+            Node leftCheck = check.Left;
+            if (getHeight(leftCheck.Left) - getHeight(leftCheck.Right) < 0) {
+                check = doubleWithLeft(check);
+            } else {
+                check = rotateWithLeft(check);
+            }
+        } else if (getHeight(check.Right) - getHeight(check.Left) == 2) {
+            Node rightCheck = check.Right;
+            if (getHeight(rightCheck.Left) - getHeight(rightCheck.Right) > 0) {
+                check = doubleWithRight(check);
+            } else {
+                check = rotateWithRight(check);
+            }
+        }
+        return check;
+    }
 }

@@ -5,6 +5,9 @@
  */
 package slang_word;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -52,5 +55,22 @@ public class Entry implements Comparable<Entry>{
     @Override
     public String toString() {
             return key + " " + definition + "\n";
+    }
+    
+    public void writeLine(String file){
+        try (BufferedWriter saved = new BufferedWriter(new FileWriter(file,true))) {
+                saved.write(key + "`");
+                for(int i=0;i<definition.size();i++){
+                    saved.write(definition.get(i));
+                    if(i+1<definition.size()){
+                        saved.write("|");
+                    }
+                }
+                saved.newLine();
+                
+                System.out.println("Slang Word successfully loaded.");
+            } catch (IOException e) {
+                System.out.println("Invalid File name.");
+            }
     }
 }
