@@ -20,9 +20,14 @@ public class main {
     private static AVLTree SlangWord = new AVLTree();
     public static void main(String[] args) {
         // TODO code application logic here
-        readFile("slang.txt");
-        findBySlangWord();
-        SlangWord.printTree();
+
+       readFile("slang.txt");
+       
+
+       
+       Entry er = SlangWord.randomNode(SlangWord.root,5);
+       System.out.println(er.toString());
+
     }
     
     public static void readFile(String fileName) {
@@ -34,6 +39,7 @@ public class main {
                 if (line.contains("`")) {
 
                     List<String> tar = new ArrayList<>();
+                    
                     String[] s = line.split("`");
                     if (s[1].contains("|")) {
                         String[] tmp = s[1].split("\\|");
@@ -46,7 +52,7 @@ public class main {
                     }
 
                     Entry newEntry = new Entry(s[0], tar);
-                    SlangWord.insert(newEntry);
+                    SlangWord.insert(s[0],tar);
                 }
             }
             System.out.println("Slang Word successfully loaded.");
@@ -58,23 +64,31 @@ public class main {
     private static void findByDefinition() {
         System.out.println("");
         Scanner kb = new Scanner(System.in);
-        System.out.print("\nEnter the word you would like to find: ");
+        System.out.print("\nEnter the definition you would like to find: ");
         String find = kb.nextLine();
-        SlangWord.find(find);
+        List<Entry> found = new ArrayList<Entry>();
+        found =  SlangWord.findByDefinition(find);
+        if(found == null) {
+            System.out.println("Slang word not found.");
+        }else {
+            for (int i=0; i< found.size(); i++){
+                System.out.print(found.get(i).toString());
+                found.get(i).writeLine("history.txt");
+            }  
+        }
     }
-      private static void findBySlangWord() {
+      private static void findByKey() {
         System.out.println("");
         Scanner kb = new Scanner(System.in);
         System.out.print("\nEnter the slang word you would like to find: ");
-        Entry find = new Entry(kb.nextLine());
-        Node found = SlangWord.find(find);
+        String find = kb.nextLine();
+        Entry found = SlangWord.findByKey(find);
+        
         if (found == null) {
-            System.out.println("Word not found.");
+            System.out.println("Slang word not found.");
         } else {
-            System.out.println(found);
-            find.setDefinition(find.getDefinition());
-            System.out.println(find);
-//            find.writeLine("history.txt");
+            System.out.println(found.toString());
+            found.writeLine("history.txt");
         }
     }
       
@@ -83,24 +97,22 @@ public class main {
         Scanner kb = new Scanner(System.in);
         System.out.print("\nEnter the key you would like to add to the slang word: ");
         String key = kb.nextLine();
-        Entry newEntry = new Entry(key);
-        if (SlangWord.find(newEntry) == null) {
+        if (SlangWord.findByKey(key) == null) {
             List<String> definition = new ArrayList<>();
             String str;
             System.out.print("\nPlease enter the definition of the key: ");
-
             str = kb.nextLine();
             System.out.print("");
             definition.add(str);
             do {
-                System.out.println("Have another definition?? if not enter to end : ");
+                System.out.print("Have another definition?? if not enter to end : ");
                 str = kb.nextLine();
                 if (!str.isEmpty()) {
                     definition.add(str);
                 }
             } while (!str.isEmpty());
-            newEntry.setDefinition(definition);
-            SlangWord.insert(newEntry);
+            SlangWord.insert(key,definition);
+            Entry newEntry = new Entry(key,definition);
             newEntry.writeLine("slang.txt");
             
         } else {
@@ -109,19 +121,52 @@ public class main {
 
     }
     
+
     private static void deleteSlangWord() {
         System.out.println("");
         Scanner kb = new Scanner(System.in);
         System.out.print("Please enter the key of the slang word you want to delete: ");
-        String word = kb.nextLine();
-        Entry element = new Entry(word);
-        if (SlangWord.find(element) == null) {
-            System.out.println("Word not found.");
+        String key = kb.nextLine();
+        if (SlangWord.findByKey(key) == null) {
+            System.out.println("SLang word not found.");
         } else {
-            SlangWord.remove(element);
-            System.out.println("Succcessfully removed " + word);
+            System.out.print("Are you sure? (y/n): ");
+            String choose = kb.nextLine();
+            if (choose.endsWith("y")){
+                SlangWord.remove(key);
+                truncateFile("slang.txt");
+                System.out.println("Succcessfully removed " + key);
+            }
+            
         }
     }
+    
+    
+
+    public static void truncateFile(String url) {
+        File file = new File(url);
+        try (PrintWriter pw = new PrintWriter(file)) {
+            try {
+                    pw.print(SlangWord.saveTree());           
+            } catch (Exception e) {
+                System.out.println("Can't truncate to file");
+            } finally {
+                pw.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void resetOriginList() {
+        SlangWord.removeAll(SlangWord.root);
+        readFile("origin.txt");
+        truncateFile("slang.txt");
+        System.out.println("!!! Set this as origin successfully !!!");
+
+    }
+    
+   
     
     public static void menu(){
         System.out.println("----------MENU----------");

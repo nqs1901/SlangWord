@@ -5,16 +5,18 @@
  */
 package slang_word;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
  * @author nqs
  * @param <AnyType>
  */
-public class AVLTree<AnyType extends Comparable> {
-    private Node root;
+public class AVLTree implements Serializable {
+    public Entry root;
     
     public AVLTree(Node root) {
         this.root = root;
@@ -24,162 +26,183 @@ public class AVLTree<AnyType extends Comparable> {
         this.root = null;
     }
     
-    public Node getRoot() {
+    public Entry getRoot() {
         return root;
     }
 
-    public void setRoot(Node root) {
+    public void setRoot(Entry root) {
         this.root = root;
     }
     
-    private int getHeight(Node x) {
-        if(x == null) {
-            return -1;
-        }
-        return x.getHeight();
+    public int getHeight(Entry x) {
+        return x == null ? -1 : x.height;
     }
     
-    private Node<AnyType> rotateWithLeft(Node<AnyType> n2) {
-        Node n1 = n2.Left;
+    public boolean isEmpty()
+    {
+        return root == null;
+    }
+    
+    private Entry rotateWithLeft(Entry n2) {
+        Entry n1 = n2.Left;
         n2.Left = n1.Right;
         n1.Right = n2;
-        n2.setHeight(Integer.max(getHeight(n2.Left), getHeight(n2.Right)) + 1);
-        n1.setHeight(Integer.max(getHeight(n1.Left), getHeight(n2)) + 1);
+        n2.height = (Integer.max(getHeight(n2.Left), getHeight(n2.Right)) + 1);
+        n1.height = (Integer.max(getHeight(n1.Left), getHeight(n2)) + 1);
         return n1;
     }
 
-    private Node<AnyType> rotateWithRight(Node<AnyType> n1) {
-        Node n2 = n1.Right;
+    private Entry rotateWithRight(Entry n1) {
+        Entry n2 = n1.Right;
         n1.Right = n2.Left;
         n2.Left = n1;
-        n1.setHeight(Integer.max(getHeight(n1.Left), getHeight(n1.Right)) + 1);
-        n2.setHeight(Integer.max(getHeight(n2.Right), getHeight(n1)) + 1);
+        n1.height = (Integer.max(getHeight(n1.Left), getHeight(n1.Right)) + 1);
+        n2.height = (Integer.max(getHeight(n2.Right), getHeight(n1)) + 1);
         return n2;
     }
 
-    private Node<AnyType> doubleWithLeft(Node<AnyType> n3) {
+    private Entry doubleWithLeft(Entry n3) {
         n3.Left = rotateWithRight(n3.Left);
         return rotateWithLeft(n3);
     }
 
-    private Node<AnyType> doubleWithRight(Node<AnyType> n1) {
+    private Entry doubleWithRight(Entry n1) {
         n1.Right = rotateWithLeft(n1.Right);
         return rotateWithRight(n1);
     }
-    private Node<AnyType> insert(AnyType element, Node<AnyType> check){
+    private Entry insert(String key,List<String> definition, Entry check){
         if(check == null){
-            check = new Node(element);
+            check = new Entry(key,definition);
         }
-        else if (element.compareTo(check.getItem()) < 0) {
-            check.Left = insert(element, check.Left);
+        else if (key.compareTo(check.key) < 0) {
+            check.Left = insert(key,definition, check.Left);
             if (getHeight(check.Left) - getHeight(check.Right) == 2) {
-                if (element.compareTo(check.Left.getItem()) < 0) {
+                if (key.compareTo(check.Left.key) < 0) {
                     check = rotateWithLeft(check);
                 } else {
                     check = doubleWithLeft(check);
                 }
             }
-        } else if (element.compareTo(check.getItem()) > 0) {
-            check.Right = insert(element, check.Right);
+        } else if (key.compareTo(check.key) > 0) {
+            check.Right = insert(key,definition, check.Right);
             if (getHeight(check.Right) - getHeight(check.Left) == 2) {
-                if (element.compareTo(check.Right.getItem()) > 0) {
+                if (key.compareTo(check.Right.key) > 0) {
                     check = rotateWithRight(check);
                 } else {
                     check = doubleWithRight(check);
                 }
             }
         } else {
+//            check.definition.add(definition);
+            
             System.out.println("The key you entered already exists in Slang word.");
+//            return check;
         }
 
-        check.setHeight(Integer.max(getHeight(check.Left), getHeight(check.Right)) + 1);
+        check.height = (Integer.max(getHeight(check.Left), getHeight(check.Right)) + 1);
         return check;
     }
     
-    public void insert(AnyType element) {
-        root=insert(element, root);
+    public void insert(String key, List<String> definition) {
+        root=insert(key, definition, root);
     }
     
     public void printTree() {
         printTree(root);
+
     }
 
-    private void printTree(Node check) {
+    private void printTree(Entry check) {
+        if (check == null){
+            System.out.println("Blank");
+            return;
+        }
         if (check.Left != null) {
             printTree(check.Left);
         }
         System.out.print(check);
         if (check.Right != null) {
             printTree(check.Right);
-        }
+        }  
     }
     
-    private void findByDefinition(String str, Node check) {
+    
+    private List<Entry> findByDefinition(String val, Entry check) {
         if (check == null) {
-            return;
+            return null;
         }
-        
-        if (check.getLeft() != null) 
-            findByDefinition(str, check.getLeft());
-        if (check.toString().contains(str) == true) 
-            System.out.print(check);
-        if (check.getRight() != null) {
-            findByDefinition(str, check.getRight());
+        List<Entry> found = new ArrayList<Entry>();
+        if (check.Left != null) {
+            found.addAll(findByDefinition(val, check.Left));
         }
+
+        if (check.toString().contains(val) == true) {
+            found.add(check);
+
+        }
+        if (check.Right != null) {
+            found.addAll(findByDefinition(val, check.Right));
+        }
+        return found;
     }
-    private Node findBySlangWord(AnyType element, Node check) {
+    
+    public List<Entry> findByDefinition(String val) {
+        return findByDefinition(val, root);
+    }
+     
+     
+    private Entry findByKey(String key, Entry check) {
         if (check == null) {
             return check;
         }
-        Node returned = null;
-        if (element.compareTo(check.item) == 0) {
+        Entry returned = null;
+        if (key.compareTo(check.key) == 0) {
             returned = check;
-        } else if (element.compareTo(check.item) < 0) {
-            if (check.getLeft() != null) {
-                returned = findBySlangWord(element, check.getLeft());
+        } else if (key.compareTo(check.key) < 0) {
+            if (check.Left != null) {
+                returned = findByKey(key, check.Left);
             }
-        } else if (element.compareTo(check.item) > 0) {
-            if (check.getRight() != null) {
-                returned = findBySlangWord(element, check.getRight());
+        } else if (key.compareTo(check.key) > 0) {
+            if (check.Right!= null) {
+                returned = findByKey(key, check.Right);
             }
         }
         return returned;
+     
     }
     
-    public void find(String str) {
-        findByDefinition(str, root);
+   
+    
+    public Entry findByKey(String key) {
+        return findByKey(key, root);
     }
     
-    public Node find(AnyType element) {
-        return findBySlangWord(element, root);
-    }
-    
-    private Node findMinNode(Node<AnyType> find) {
+    private Entry findMinNode(Entry find) {
         if (find.Left == null) {
             return find;
         } else {
             return findMinNode(find.Left);
         }
     }
-    public void remove(AnyType x) {
+    public void remove(String x) {
 
         root = remove(x, root);
     }
 
-    private Node remove(AnyType element, Node check) {
+    private Entry remove(String key, Entry check) {
         if (check == null) {
             return check;
         } 
-        else if (element.compareTo(check.getItem()) < 0) {
-            check.Left = remove(element, check.Left);
+        else if (key.compareTo(check.key) < 0) {
+            check.Left = remove(key, check.Left);
 
         } 
-        else if (element.compareTo(check.getItem()) > 0) {
-            check.Right = remove(element, check.Right);
+        else if (key.compareTo(check.key) > 0) {
+            check.Right = remove(key, check.Right);
         }
         else {
             if (check.Right == null || check.Left == null) {
-                Node temp = null;
+                Entry temp = null;
                 if (check.Left == null) {
                     temp = check.Right;
                 } else {
@@ -191,23 +214,23 @@ public class AVLTree<AnyType extends Comparable> {
                     check = temp;
                 }
             } else {
-                Node temp = findMinNode(check.Right);
-                check.setItem(temp.getItem());
-                check.Right = remove((AnyType) temp.item, check.Right);
+                Entry temp = findMinNode(check.Right);
+                check = temp;
+                check.Right = remove(key, check.Right);
             }
         }
         if (check == null) {
             return check;
         }
         if (getHeight(check.Left) - getHeight(check.Right) == 2) {
-            Node leftCheck = check.Left;
+            Entry leftCheck = check.Left;
             if (getHeight(leftCheck.Left) - getHeight(leftCheck.Right) < 0) {
                 check = doubleWithLeft(check);
             } else {
                 check = rotateWithLeft(check);
             }
         } else if (getHeight(check.Right) - getHeight(check.Left) == 2) {
-            Node rightCheck = check.Right;
+            Entry rightCheck = check.Right;
             if (getHeight(rightCheck.Left) - getHeight(rightCheck.Right) > 0) {
                 check = doubleWithRight(check);
             } else {
@@ -215,5 +238,55 @@ public class AVLTree<AnyType extends Comparable> {
             }
         }
         return check;
+    }
+    
+    public String saveTree() {
+        return saveTree(root);
+    }
+
+    private String saveTree(Entry check) {
+
+        String savedlist = check.toString();
+        if (check.Left != null) {
+
+            savedlist += saveTree(check.Left);
+        }
+        if (check.Right != null) {
+
+            savedlist += saveTree(check.Right);
+        }
+        return savedlist;
+        
+    }
+    
+    public void removeAll(Entry check){
+        if(check !=null){
+            removeAll(check.Left);
+            remove(check.key);
+            removeAll(check.Right);
+        }
+    }
+
+    public int getSize(Entry root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + getSize(root.Left) + getSize(root.Right);
+    }
+    
+    
+   
+    public Entry randomNode(Entry root,int rand) {
+
+        int leftSize = (root.Left == null ? 0 : root.Left.getSize(root));
+
+        if (rand == leftSize) {
+            return root; // current is chosen,
+        }
+        if (rand < leftSize) {
+            return randomNode(root.Left, rand); // call on left subtree recursively,
+        } else {
+            return randomNode(root.Right, rand - leftSize - 1);
+        }
     }
 }
