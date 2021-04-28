@@ -96,7 +96,7 @@ public class Entry implements Serializable{
         if (root == null) {
             return 0;
         }
-        return 1 + getSize(root.Left) - getSize(root.Right);
+        return Math.abs(1 + getSize(root.Left) - getSize(root.Right));
     }
     
 }

@@ -18,7 +18,7 @@ import java.util.Random;
 public class AVLTree implements Serializable {
     public Entry root;
     
-    public AVLTree(Node root) {
+    public AVLTree(Entry root) {
         this.root = root;
     }
     
@@ -121,6 +121,7 @@ public class AVLTree implements Serializable {
             printTree(check.Left);
         }
         System.out.print(check);
+        System.out.print(check.getSize(check));
         if (check.Right != null) {
             printTree(check.Right);
         }  
@@ -276,17 +277,22 @@ public class AVLTree implements Serializable {
     
     
    
-    public Entry randomNode(Entry root,int rand) {
-
-        int leftSize = (root.Left == null ? 0 : root.Left.getSize(root));
-
+    public Entry randomNode(Entry root,int leftSize,int rand) {
+        leftSize++;
         if (rand == leftSize) {
             return root; // current is chosen,
         }
-        if (rand < leftSize) {
-            return randomNode(root.Left, rand); // call on left subtree recursively,
-        } else {
-            return randomNode(root.Right, rand - leftSize - 1);
+        if (root.Left != null) {
+            return randomNode(root.Left,leftSize, rand); // call on left subtree recursively,
+        } 
+        if (root.Right != null) 
+        {
+            return randomNode(root.Right,leftSize, rand);
         }
+        return null;
+    }
+    
+    public Entry randomNode(int leftSize, int rand){
+        return randomNode(root,leftSize,rand);
     }
 }
