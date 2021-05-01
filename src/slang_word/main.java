@@ -24,8 +24,9 @@ public class main {
        readFile("slang.txt");
 
 
-       Entry t = SlangWord.randomNode(0, 56);
-       System.out.print(t.toString());
+//       Entry t = SlangWord.randomNode(SlangWord.root);
+//       System.out.print(t.toString());
+       quizByDefinition();
 
     }
     
@@ -166,11 +167,8 @@ public class main {
     }
     
     public static Entry randomSlangWord(){
-        Random rd = new Random();
-        int rand = rd.nextInt(SlangWord.getSize(SlangWord.root));
-        System.out.print(rand);
         
-        return SlangWord.randomNode(SlangWord.root, rand);
+        return SlangWord.randomNode(SlangWord.root);
     }
     
     public static void quizByKey(){
@@ -178,7 +176,7 @@ public class main {
         List<Entry> answer = new ArrayList<Entry>();
         Entry temp = randomSlangWord();
         for (int i=0; i<4;i++){
-            while(answer.contains(temp)){
+            while(answer .contains(temp)){
                 temp = randomSlangWord();
             }
             answer.add(temp);
@@ -199,7 +197,33 @@ public class main {
             System.out.println("Oops!!! Wrong answer");
         }
     }
-   
+    
+    public static void quizByDefinition(){
+        Random rd = new Random();
+        List<Entry> answer = new ArrayList<Entry>();
+        Entry temp = randomSlangWord();
+        for (int i=0; i<4;i++){
+            while(answer .contains(temp)){
+                temp = randomSlangWord();
+            }
+            answer.add(temp);
+        }
+        int correct = rd.nextInt(3);
+        Scanner kb = new Scanner(System.in);
+        System.out.println("\n^^ The mysterious slang word is: " + answer.get(correct).definition);
+        System.out.println("Answer: ");
+        System.out.println("1. " + answer.get(0).key);
+        System.out.println("2. " + answer.get(1).key);
+        System.out.println("3. " + answer.get(2).key);
+        System.out.println("4. " + answer.get(3).key);
+        System.out.print("\nYour choose is: ");
+        int choose = kb.nextInt(); 
+        if (choose - 1 == correct){
+            System.out.println("Congrat!!! correct answer !!!");
+        }else{
+            System.out.println("Oops!!! Wrong answer");
+        }
+    }
     
     public static void menu(){
         System.out.println("----------MENU----------");

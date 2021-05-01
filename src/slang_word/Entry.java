@@ -19,6 +19,7 @@ public class Entry implements Serializable{
     Entry Left = null;
     Entry Right = null;
     int height = 0;
+    int children =0;
     public String key;
     public List<String> definition;
     
@@ -64,13 +65,6 @@ public class Entry implements Serializable{
      * @return
      */
     
-
-    
-
-//    @Override
-//    public int compareTo(Entry t) {
-//        return key.compareToIgnoreCase(t.key);
-//    }
     
     @Override
     public String toString() {
@@ -96,7 +90,7 @@ public class Entry implements Serializable{
         if (root == null) {
             return 0;
         }
-        return Math.abs(1 + getSize(root.Left) - getSize(root.Right));
+        return root.height+1;
     }
     
 }

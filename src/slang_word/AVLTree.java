@@ -100,6 +100,7 @@ public class AVLTree implements Serializable {
         }
 
         check.height = (Integer.max(getHeight(check.Left), getHeight(check.Right)) + 1);
+
         return check;
     }
     
@@ -275,24 +276,29 @@ public class AVLTree implements Serializable {
         return 1 + getSize(root.Left) + getSize(root.Right);
     }
     
-    
+    public int children(Entry root)
+{
+    if (root == null)
+        return 0;
+    return root.children + 1;
+}
    
-    public Entry randomNode(Entry root,int leftSize,int rand) {
-        leftSize++;
-        if (rand == leftSize) {
-            return root; // current is chosen,
+    public Entry randomNode(Entry root,int rand) {
+        if (root == null) {
+            return null; // current is chosen,
         }
-        if (root.Left != null) {
-            return randomNode(root.Left,leftSize, rand); // call on left subtree recursively,
+        if (rand == children(root.Left)) {
+            return root; 
         } 
-        if (root.Right != null) 
+        if (rand < children(root.Left)) 
         {
-            return randomNode(root.Right,leftSize, rand);
+            return randomNode(root.Left, rand);
         }
-        return null;
+        return randomNode(root.Right,rand - children(root.Left)-1);
     }
     
-    public Entry randomNode(int leftSize, int rand){
-        return randomNode(root,leftSize,rand);
+    public Entry randomNode(Entry root){
+        int rand = (int) (Math.random() * (root.height + 1));
+        return randomNode(root,rand);
     }
 }
