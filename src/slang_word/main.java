@@ -26,7 +26,7 @@ public class main {
 
 //       Entry t = SlangWord.randomNode(SlangWord.root);
 //       System.out.print(t.toString());
-       quizByDefinition();
+       editSlangWord();
 
     }
     
@@ -117,6 +117,38 @@ public class main {
             
         } else {
             System.out.println("\nThe word you entered already exists in the slang word.");
+        }
+
+    }
+    
+    private static void editSlangWord() {
+        System.out.println("");
+        Scanner kb = new Scanner(System.in);
+        System.out.print("\nEnter the key you would like to edit to the slang word: ");
+        String key = kb.nextLine();
+        Entry found = SlangWord.findByKey(key);
+        if ( found == null) {
+            System.out.println("\nSlang word not found.");
+
+        } else {
+            List<String> definition = new ArrayList<>();
+            String str;
+            System.out.print("\nPlease enter the definition of the key: ");
+            str = kb.nextLine();
+            System.out.print("");
+            definition.add(str);
+            do {
+                System.out.print("Have another definition?? if not enter to end : ");
+                str = kb.nextLine();
+                if (!str.isEmpty()) {
+                    definition.add(str);
+                }
+            } while (!str.isEmpty());
+            SlangWord.remove(found.key);
+            SlangWord.insert(found.key,definition);
+            truncateFile("slang.txt");
+//            Entry newEntry = new Entry(key,definition);
+//            newEntry.writeLine("slang.txt");
         }
 
     }
