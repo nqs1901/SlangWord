@@ -15,27 +15,29 @@ import java.util.List;
  *
  * @author nqs
  */
-public class Entry implements Serializable{
+public class Entry implements Serializable {
+
     Entry Left = null;
     Entry Right = null;
     int height = 0;
-    int children =0;
+    int children = 0;
     public String key;
     public List<String> definition;
-    
-    public Entry(){
-        
+
+    public Entry() {
+
     }
-    public Entry(String key, List<String> definition){
+
+    public Entry(String key, List<String> definition) {
         this.key = key;
         this.definition = (definition);
     }
-    
-    public Entry(String key){
+
+    public Entry(String key) {
         this.key = key;
         this.definition = null;
     }
-    
+
     public void setRight(Entry x) {
         this.Right = x;
     }
@@ -43,7 +45,7 @@ public class Entry implements Serializable{
     public int getHeight() {
         return height;
     }
-    
+
     public String getKey() {
         return key;
     }
@@ -51,7 +53,7 @@ public class Entry implements Serializable{
     public void setKey(String key) {
         this.key = key;
     }
-    
+
     public List<String> getDefinition() {
         return definition;
     }
@@ -64,8 +66,6 @@ public class Entry implements Serializable{
      *
      * @return
      */
-    
-    
     @Override
     public String toString() {
         String str = key + "`";
@@ -75,22 +75,15 @@ public class Entry implements Serializable{
                 str = str + "|";
             }
         }
-        return str+"\n";
+        return str + "\n";
     }
 
-    
-    public void writeLine(String file){
-        try (BufferedWriter saved = new BufferedWriter(new FileWriter(file,true))) {
-                saved.write(toString());
-            } catch (IOException e) {
-                System.out.println("Invalid File name.");
-            }
-    }
-    public int getSize(Entry root) {
-        if (root == null) {
-            return 0;
+    public void writeLine(String file) {
+        try (BufferedWriter saved = new BufferedWriter(new FileWriter(file, true))) {
+            saved.write(toString());
+        } catch (IOException e) {
+            System.out.println("Invalid File name.");
         }
-        return root.height+1;
     }
-    
+
 }

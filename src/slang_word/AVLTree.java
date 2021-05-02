@@ -13,19 +13,19 @@ import java.util.Random;
 /**
  *
  * @author nqs
- * @param <AnyType>
  */
 public class AVLTree implements Serializable {
+
     public Entry root;
-    
+
     public AVLTree(Entry root) {
         this.root = root;
     }
-    
-    public AVLTree(){
+
+    public AVLTree() {
         this.root = null;
     }
-    
+
     public Entry getRoot() {
         return root;
     }
@@ -33,16 +33,15 @@ public class AVLTree implements Serializable {
     public void setRoot(Entry root) {
         this.root = root;
     }
-    
+
     public int getHeight(Entry x) {
         return x == null ? -1 : x.height;
     }
-    
-    public boolean isEmpty()
-    {
+
+    public boolean isEmpty() {
         return root == null;
     }
-    
+
     private Entry rotateWithLeft(Entry n2) {
         Entry n1 = n2.Left;
         n2.Left = n1.Right;
@@ -70,12 +69,12 @@ public class AVLTree implements Serializable {
         n1.Right = rotateWithLeft(n1.Right);
         return rotateWithRight(n1);
     }
-    private Entry insert(String key,List<String> definition, Entry check){
-        if(check == null){
-            check = new Entry(key,definition);
-        }
-        else if (key.compareTo(check.key) < 0) {
-            check.Left = insert(key,definition, check.Left);
+
+    private Entry insert(String key, List<String> definition, Entry check) {
+        if (check == null) {
+            check = new Entry(key, definition);
+        } else if (key.compareTo(check.key) < 0) {
+            check.Left = insert(key, definition, check.Left);
             if (getHeight(check.Left) - getHeight(check.Right) == 2) {
                 if (key.compareTo(check.Left.key) < 0) {
                     check = rotateWithLeft(check);
@@ -84,7 +83,7 @@ public class AVLTree implements Serializable {
                 }
             }
         } else if (key.compareTo(check.key) > 0) {
-            check.Right = insert(key,definition, check.Right);
+            check.Right = insert(key, definition, check.Right);
             if (getHeight(check.Right) - getHeight(check.Left) == 2) {
                 if (key.compareTo(check.Right.key) > 0) {
                     check = rotateWithRight(check);
@@ -93,28 +92,23 @@ public class AVLTree implements Serializable {
                 }
             }
         } else {
-//            check.definition.add(definition);
-            
             System.out.println("The key you entered already exists in Slang word.");
-//            return check;
         }
-
         check.height = (Integer.max(getHeight(check.Left), getHeight(check.Right)) + 1);
-
         return check;
     }
-    
+
     public void insert(String key, List<String> definition) {
-        root=insert(key, definition, root);
+        root = insert(key, definition, root);
     }
-    
+
     public void printTree() {
         printTree(root);
 
     }
 
     private void printTree(Entry check) {
-        if (check == null){
+        if (check == null) {
             System.out.println("Blank");
             return;
         }
@@ -122,13 +116,11 @@ public class AVLTree implements Serializable {
             printTree(check.Left);
         }
         System.out.print(check);
-        System.out.print(check.getSize(check));
         if (check.Right != null) {
             printTree(check.Right);
-        }  
+        }
     }
-    
-    
+
     private List<Entry> findByDefinition(String val, Entry check) {
         if (check == null) {
             return null;
@@ -147,12 +139,11 @@ public class AVLTree implements Serializable {
         }
         return found;
     }
-    
+
     public List<Entry> findByDefinition(String val) {
         return findByDefinition(val, root);
     }
-     
-     
+
     private Entry findByKey(String key, Entry check) {
         if (check == null) {
             return check;
@@ -165,20 +156,18 @@ public class AVLTree implements Serializable {
                 returned = findByKey(key, check.Left);
             }
         } else if (key.compareTo(check.key) > 0) {
-            if (check.Right!= null) {
+            if (check.Right != null) {
                 returned = findByKey(key, check.Right);
             }
         }
         return returned;
-     
+
     }
-    
-   
-    
+
     public Entry findByKey(String key) {
         return findByKey(key, root);
     }
-    
+
     private Entry findMinNode(Entry find) {
         if (find.Left == null) {
             return find;
@@ -186,6 +175,7 @@ public class AVLTree implements Serializable {
             return findMinNode(find.Left);
         }
     }
+
     public void remove(String x) {
 
         root = remove(x, root);
@@ -194,15 +184,12 @@ public class AVLTree implements Serializable {
     private Entry remove(String key, Entry check) {
         if (check == null) {
             return check;
-        } 
-        else if (key.compareTo(check.key) < 0) {
+        } else if (key.compareTo(check.key) < 0) {
             check.Left = remove(key, check.Left);
 
-        } 
-        else if (key.compareTo(check.key) > 0) {
+        } else if (key.compareTo(check.key) > 0) {
             check.Right = remove(key, check.Right);
-        }
-        else {
+        } else {
             if (check.Right == null || check.Left == null) {
                 Entry temp = null;
                 if (check.Left == null) {
@@ -241,7 +228,7 @@ public class AVLTree implements Serializable {
         }
         return check;
     }
-    
+
     public String saveTree() {
         return saveTree(root);
     }
@@ -258,11 +245,11 @@ public class AVLTree implements Serializable {
             savedlist += saveTree(check.Right);
         }
         return savedlist;
-        
+
     }
-    
-    public void removeAll(Entry check){
-        if(check !=null){
+
+    public void removeAll(Entry check) {
+        if (check != null) {
             removeAll(check.Left);
             remove(check.key);
             removeAll(check.Right);
@@ -275,30 +262,29 @@ public class AVLTree implements Serializable {
         }
         return 1 + getSize(root.Left) + getSize(root.Right);
     }
-    
-    public int children(Entry root)
-{
-    if (root == null)
-        return 0;
-    return root.children + 1;
-}
-   
-    public Entry randomNode(Entry root,int rand) {
+
+    public int children(Entry root) {
+        if (root == null) {
+            return 0;
+        }
+        return root.children + 1;
+    }
+
+    public Entry randomNode(Entry root, int rand) {
         if (root == null) {
             return null; // current is chosen,
         }
         if (rand == children(root.Left)) {
-            return root; 
-        } 
-        if (rand < children(root.Left)) 
-        {
+            return root;
+        }
+        if (rand < children(root.Left)) {
             return randomNode(root.Left, rand);
         }
-        return randomNode(root.Right,rand - children(root.Left)-1);
+        return randomNode(root.Right, rand - children(root.Left) - 1);
     }
-    
-    public Entry randomNode(Entry root){
+
+    public Entry randomNode(Entry root) {
         int rand = (int) (Math.random() * (root.height + 1));
-        return randomNode(root,rand);
+        return randomNode(root, rand);
     }
 }

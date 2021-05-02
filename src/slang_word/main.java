@@ -18,19 +18,67 @@ public class main {
      * @param args the command line arguments
      */
     private static AVLTree SlangWord = new AVLTree();
+    private static AVLTree historySearch = new AVLTree();
     public static void main(String[] args) {
         // TODO code application logic here
 
-       readFile("slang.txt");
-
-
-//       Entry t = SlangWord.randomNode(SlangWord.root);
-//       System.out.print(t.toString());
-       editSlangWord();
+       readFile("slang.txt",SlangWord);
+       
+       String choose = null;
+        boolean exit = false;
+        Scanner kb = new Scanner(System.in);
+        while (true) {
+            menu();
+            choose = kb.nextLine();
+            switch (choose) {
+                case "1":
+                    findByKey();
+                    break;
+                case "2":
+                   findByDefinition();
+                    break;
+                case "3":
+                    readFile("history.txt",historySearch);
+                    historySearch.printTree();
+                    break;
+                case "4":
+                    addNewSlangWord();
+                    break;
+                case "5":
+                    editSlangWord();
+                    break;
+                case "6":
+                    deleteSlangWord();
+                    break;
+                case "7":
+                    resetOriginList();
+                    break;
+                case "8":
+                    Entry slw = randomSlangWord();
+                    System.out.println(slw.toString());
+                    break;
+                case "9":
+                    quizByKey();
+                    break;
+                case "10":
+                    quizByDefinition();
+                    break;
+                case "0":
+                    System.out.println("exited!");
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("invalid! please choose action in below menu:");
+                    break;
+            }
+            if (exit) {
+                break;
+            }
+        }
 
     }
     
-    public static void readFile(String fileName) {
+    public static void readFile(String fileName, AVLTree SlangWord) {
         System.out.println("");
         try (BufferedReader saved = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -192,7 +240,7 @@ public class main {
     
     public static void resetOriginList() {
         SlangWord.removeAll(SlangWord.root);
-        readFile("origin.txt");
+        readFile("origin.txt",SlangWord);
         truncateFile("slang.txt");
         System.out.println("!!! Set this as origin successfully !!!");
 
@@ -269,7 +317,7 @@ public class main {
         System.out.println("8. Random 1 slang ");
         System.out.println("9. Quiz by slang word");
         System.out.println("10. Quiz by definition");
-        System.out.println("11. Exitt");
+        System.out.println("0. Exitt");
         System.out.println("-------------------------------------");
         System.out.print("Input number to choose: ");
     }
