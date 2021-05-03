@@ -1,6 +1,6 @@
 # SlangWord
 MSSV: 20424112
-Ho ten: Ng
+Ho ten: Nguyen Quang Sang
 Chuc nang 1: 10d
 Chuc nang 2: 10d
 Chuc nang 3: 10d
