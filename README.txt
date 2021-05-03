@@ -4,7 +4,7 @@ Ho ten: Nguyen Quang Sang
 Chuc nang 1: 10d
 Chuc nang 2: 10d
 Chuc nang 3: 10d
-Chuc nang 5: 10d
+Chuc nang 4: 5d
 Chuc nang 5: 10d
 Chuc nang 6: 10d
 Chuc nang 7: 10d
